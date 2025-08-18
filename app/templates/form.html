@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🐝 Spelling Bee Solver</title>
+  <link rel="alternate icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
@@ -15,12 +16,12 @@
     <form id="puzzleForm">
       <label>
         Center Letter:
-        <input type="text" id="center" maxlength="1" required placeholder="L" />
+        <input type="text" id="center" maxlength="1" required placeholder="" />
       </label>
 
       <label>
         Outer Letters (6):
-        <input type="text" id="outer" maxlength="6" required placeholder="IH SBOY" />
+        <input type="text" id="outer" maxlength="6" required placeholder="" />
       </label>
 
       <button type="submit">Solve Puzzle</button>
