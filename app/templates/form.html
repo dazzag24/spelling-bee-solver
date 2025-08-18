@@ -1,0 +1,115 @@
+<!-- app/templates/form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🐝 Spelling Bee Solver</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <h1>🐝 Spelling Bee Solver</h1>
+    <p>Enter today's letters to find all valid words.</p>
+
+    <form id="puzzleForm">
+      <label>
+        Center Letter:
+        <input type="text" id="center" maxlength="1" required placeholder="L" />
+      </label>
+
+      <label>
+        Outer Letters (6):
+        <input type="text" id="outer" maxlength="6" required placeholder="IH SBOY" />
+      </label>
+
+      <button type="submit">Solve Puzzle</button>
+    </form>
+
+    <div id="result" style="display:none;">
+      <h2>Words Found: <span id="wordCount"></span></h2>
+      <div id="pangrams"></div>
+
+      <input type="text" id="searchBox" placeholder="Start typing to filter..." />
+      <ul id="wordList"></ul>
+    </div>
+
+    <div id="error" class="error"></div>
+  </div>
+
+  <script>
+    let allWords = [];
+
+    document.getElementById("puzzleForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const center = document.getElementById("center").value.trim();
+      const outer = Array.from(document.getElementById("outer").value.trim().replace(/\s+/g, ""));
+
+      if (outer.length !== 6) {
+        showError("Please enter exactly 6 outer letters.");
+        return;
+      }
+
+      const resp = await fetch("/solve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ center, outer })
+      });
+
+      const data = await resp.json();
+      if (resp.ok && data.words) {
+        allWords = data.words;
+        displayResults(data);
+      } else {
+        showError(data.error || "Unknown error");
+      }
+    };
+
+    function displayResults(data) {
+      document.getElementById("error").style.display = "none";
+      document.getElementById("result").style.display = "block";
+
+      document.getElementById("wordCount").textContent = data.count;
+
+      const pangramEl = document.getElementById("pangrams");
+      if (data.pangrams.length > 0) {
+        pangramEl.innerHTML = `<p>🎯 Pangram: <strong>${data.pangrams.join(", ")}</strong></p>`;
+      } else {
+        pangramEl.innerHTML = "";
+      }
+
+      displayWords(allWords);
+    }
+
+    function displayWords(words) {
+      const ul = document.getElementById("wordList");
+      ul.innerHTML = "";
+      if (words.length === 0) {
+        ul.innerHTML = "<li><em>No words found.</em></li>";
+        return;
+      }
+      words.forEach(word => {
+        const li = document.createElement("li");
+        li.textContent = word;
+        ul.appendChild(li);
+      });
+    }
+
+    document.getElementById("searchBox").oninput = () => {
+      const q = document.getElementById("searchBox").value.toLowerCase();
+      if (q === "") {
+        displayWords(allWords);
+      } else {
+        displayWords(allWords.filter(w => w.startsWith(q)));
+      }
+    };
+
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.textContent = "❌ " + msg;
+      el.style.display = "block";
+      document.getElementById("result").style.display = "none";
+    }
+  </script>
+</body>
+</html>
