@@ -11,20 +11,12 @@
 <body>
   <div class="container">
     <h1>🐝 Spelling Bee Solver</h1>
-    <p>Enter today's letters to find all valid words.</p>
+    <p>Today's letters: <span id="todaysLetters"></span></p>
 
     <form id="puzzleForm">
-      <label>
-        Center Letter:
-        <input type="text" id="center" maxlength="1" required placeholder="" />
-      </label>
-
-      <label>
-        Outer Letters (6):
-        <input type="text" id="outer" maxlength="6" required placeholder="" />
-      </label>
-
-      <button type="submit">Solve Puzzle</button>
+      <label for="prefixInput">Enter the first 2+ letters:</label>
+      <input type="text" id="prefixInput" minlength="2" maxlength="7" required pattern="[a-zA-Z]{2,7}" />
+      <button type="submit" id="solveBtn" disabled>Solve Puzzle</button>
     </form>
 
     <div id="result" style="display:none;">
@@ -40,21 +32,36 @@
 
   <script>
     let allWords = [];
+    let todaysLetters = "";
+
+    // Fetch today's letters from the backend
+    async function fetchLetters() {
+      const resp = await fetch("/letters");
+      const data = await resp.json();
+      if (data.letters && data.letters.length === 7) {
+        todaysLetters = data.letters.join(" ");
+        document.getElementById("todaysLetters").textContent = todaysLetters;
+      } else {
+        document.getElementById("todaysLetters").textContent = "Not loaded yet.";
+      }
+    }
+    fetchLetters();
+
+    const prefixInput = document.getElementById("prefixInput");
+    const solveBtn = document.getElementById("solveBtn");
+
+    prefixInput.addEventListener("input", () => {
+      solveBtn.disabled = prefixInput.value.length < 2;
+    });
 
     document.getElementById("puzzleForm").onsubmit = async (e) => {
       e.preventDefault();
-      const center = document.getElementById("center").value.trim();
-      const outer = Array.from(document.getElementById("outer").value.trim().replace(/\s+/g, ""));
-
-      if (outer.length !== 6) {
-        showError("Please enter exactly 6 outer letters.");
-        return;
-      }
+      const prefix = prefixInput.value.trim().toLowerCase();
 
       const resp = await fetch("/solve", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ center, outer })
+        body: JSON.stringify({ prefix })
       });
 
       const data = await resp.json();
