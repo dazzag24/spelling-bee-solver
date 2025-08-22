@@ -1,5 +1,6 @@
-# 1. Get word list
-wget -O words.txt https://raw.githubusercontent.com/dwyl/english-words/master/words.txt
+# Spellbee.org Helper
 
-# 2. Start the server
+If you get stuck on some words, then this tool can assist you.
+
+## Running
 docker-compose up --build
