@@ -11,7 +11,7 @@ letters = []
 center_letter = ""
 
 async def fetch_spellbee_data():
-    global word_set, letters
+    global word_set, letters, center_letter
     today = datetime.now().strftime("%Y-%m-%d")
     url = "https://spellbee.org/"
     async with async_playwright() as p:
@@ -62,6 +62,9 @@ def index():
 @app.route("/solve", methods=["POST"])
 def solve():
     global letters
+    global center_letter
+    global word_set
+
     if not letters or len(letters) != 7:
         return jsonify({"error": "Letters not loaded yet."}), 503
 
@@ -71,7 +74,6 @@ def solve():
     if not prefix or len(prefix) < 2:
         return jsonify({"error": "Please enter at least 2 starting letters."}), 400
 
-    center = letters[0].lower()
     allowed = set(letters)
     valid = []
 
@@ -80,7 +82,7 @@ def solve():
             continue
         if not set(word).issubset(allowed):
             continue
-        if center not in word:
+        if center_letter not in word:
             continue
         if not word.startswith(prefix):
             continue
