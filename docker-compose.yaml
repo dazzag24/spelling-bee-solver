@@ -1,6 +1,9 @@
 services:
   spelling-bee-web:
+    container_name: spelling-bee-solver
     build: .
     ports:
       - "8080:8080"
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
