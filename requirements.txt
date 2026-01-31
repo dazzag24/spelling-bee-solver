@@ -1,5 +1,0 @@
-Flask
-Werkzeug
-numpy
-apscheduler
-playwright==1.54.0

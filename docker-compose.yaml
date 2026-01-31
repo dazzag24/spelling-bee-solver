@@ -1,7 +1,9 @@
 services:
-  spelling-bee-web:
+  spelling-bee-solver:
     container_name: spelling-bee-solver
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.slim
     ports:
       - "8060:8080"
     restart: unless-stopped
