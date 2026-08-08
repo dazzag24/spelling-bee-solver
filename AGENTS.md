@@ -6,7 +6,7 @@ A Flask web application that fetches daily puzzle data from [spellbee.org](https
 
 ## Architecture
 
-- **Language**: Python 3.12+
+- **Language**: Python 3.14+
 - **Framework**: Flask with Playwright for browser automation
 - **Deployment**: Docker multi-stage build (slim image)
 - **Entry point**: `entrypoint.py` → `app.py`
