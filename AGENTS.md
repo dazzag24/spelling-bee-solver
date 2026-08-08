@@ -34,7 +34,7 @@ A Flask web application that fetches daily puzzle data from [spellbee.org](https
 ## Constraints
 
 - **Do not modify** `Dockerfile.slim` or `docker-compose.yaml` without explicit user approval — these are intentionally optimized for minimal image size
-- **Do not upgrade** Playwright beyond 1.58.0 without testing — browser compatibility with spellbee.org is critical
+- **Do not upgrade** Playwright beyond 1.62.0 without testing — browser compatibility with spellbee.org is critical
 - **Preserve** the existing data flow: Playwright scrapes spellbee.org → Flask serves filtered results
 - **Maintain** the 7-letter + 1 center-letter puzzle model
 - **Keep** word length minimum of 4 characters
