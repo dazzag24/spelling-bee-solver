@@ -9,10 +9,11 @@ dependencies = [
     "numpy",
     "apscheduler",
     "playwright==1.63.0",
+    "urllib3>=2.8.0",
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27.0", "setuptools>=78.1.1"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
